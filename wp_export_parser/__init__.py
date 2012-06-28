@@ -1,1 +1,1 @@
-from .parse import *
+from .parse import get_posts
