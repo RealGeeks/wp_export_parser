@@ -64,13 +64,13 @@ class WPParser(object):
     def get_domain(self):
         return urlparse(self.data.find('.//channel/link').text).hostname
 
-    def get_posts(self,download_images=True):
+    def get_posts(self,extract_images=True):
         posts = self.data.findall('.//item')
         for post in posts:
             post = parse_post(post)
             post['comments'] = get_comments(post)
             post['categories'] = get_categories(post)
-            if download_images:
+            if extract_images:
                 images = get_all_linked_images(post['body'],ignore_unless=self.get_domain())
                 if images:
                     self.queued_images.update(set(images))
