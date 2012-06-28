@@ -9,13 +9,17 @@ def parse_post(post):
     for element in post.getiterator():
         if 'title' in element.tag:
             out['title'] = element.text
-        if 'post_name' in element.tag:
+        elif 'post_name' in element.tag:
             out['post_name'] = element.text
-        if 'post_id' in element.tag:
+        elif 'post_id' in element.tag:
             out['post_id'] = element.text
-        if 'post_type' in element.tag:
+        elif 'post_type' in element.tag:
             out['post_type'] = element.text
-        if 'link' in element.tag:
+        elif 'pubDate' in element.tag:
+            out['pubDate'] = datetime.datetime.strptime(element.text,'%a, %d %b %Y %H:%M:%S +0000')
+        elif 'pubDate' in element.tag:
+            out['pubDate'] = datetime.datetime.strptime(element.text,'%a, %d %b %Y %H:%M:%S +0000')
+        elif 'link' in element.tag:
             out['link'] = element.text
     out['body'] = wpautop(post.findtext('.//{http://purl.org/rss/1.0/modules/content/}encoded'))
     return out

@@ -7,14 +7,14 @@ from wp_export_parser.parse import parse_post, parse_comment, parse_category
 from wp_export_parser.extract_images import get_all_linked_images
 from xml.etree.ElementTree import fromstring
 
-def wp_export_fragment(text):
+def wp_export_fragment(text,annoying_version='1.2'):
     namespace_header = """<rss version="2.0"
-	xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
+	xmlns:excerpt="http://wordpress.org/export/{v}/excerpt/"
 	xmlns:content="http://purl.org/rss/1.0/modules/content/"
 	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
-	xmlns:wp="http://wordpress.org/export/1.2/"
-        >"""
+	xmlns:wp="http://wordpress.org/export/{v}/"
+        >""".format(v=annoying_version)
     namespace_footer = "</rss>"
 
     return fromstring(namespace_header + text + namespace_footer)
@@ -66,8 +66,7 @@ class TestParseCategory(unittest.TestCase):
         self.assertEquals(parsed_category,'Bank of America Idiotcies')
 
 class TestParsePost(unittest.TestCase):
-    def test_parse_post(self):
-        post = wp_export_fragment("""
+    post_text = """
 	<item>
 		<title>Somewhere Real Estate Sellers, Your Time Has Come!</title>
 		<link>http://www.example.com/somewheredwellings/sellers-market/4641/</link>
@@ -111,10 +110,26 @@ Each month we are seeing the "Days on Market" average drop. Currently it is less
 			<wp:meta_value><![CDATA[3]]></wp:meta_value>
 		</wp:postmeta>
 	</item>
-        """)
+        """
+
+    def test_parse_post(self):
+        post = wp_export_fragment(self.post_text)
         parsed_post = parse_post(post)
         self.assertEquals(parsed_post['title'],'Somewhere Real Estate Sellers, Your Time Has Come!')
         assert('HOT seller\'s market' in parsed_post['body'])
+
+    def test_that_we_can_read_different_export_versions(self):
+        post = wp_export_fragment(self.post_text,annoying_version='1.0')
+        parsed_post = parse_post(post)
+        post2 = wp_export_fragment(self.post_text,annoying_version='1.1')
+        parsed_post2 = parse_post(post)
+        self.assertEquals(parsed_post,parsed_post2)
+
+    def test_parse_post_datetime_converstion(self):
+        post = wp_export_fragment(self.post_text)
+        parsed_post = parse_post(post)
+        self.assertEquals(parsed_post['pubDate'],datetime.datetime(2012,5,27,17,15,14))
+    
 
 class TestExtractImages(unittest.TestCase):
     def test_extract_images(self):

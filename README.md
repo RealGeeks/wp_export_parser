@@ -24,6 +24,7 @@ from wp_export_parser import WPParser
 
 with open('wp-export.xml') as export_file:
     parser = WPParser(export_file.read())
+    print parser.get_domain() # outputs www.example.com
     for p in parser.get_posts():
         categories = p['categories']
         comments = p['comments']
