@@ -3,7 +3,7 @@
 Parsing XML sucks.  This library provides a cleaner interface to get at the data in a Wordpress export XML file
 
 
-```
+```python
 from wp_export_parser import get_posts
 
 with open('wp-export.xml') as export_file:
