@@ -2,6 +2,8 @@
 
 Parsing XML sucks.  This library provides a cleaner interface to get at the data in a Wordpress export XML file
 
+[![Build Status](https://secure.travis-ci.org/RealGeeks/wp_export_parser.png?branch=master)](http://travis-ci.org/RealGeeks/wp_export_parser)
+
 
 ```python
 from wp_export_parser import get_posts
