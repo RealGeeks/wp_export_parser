@@ -1,1 +1,1 @@
-from .parse import get_posts
+from .parse import WPParser

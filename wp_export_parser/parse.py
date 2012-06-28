@@ -1,5 +1,8 @@
+import datetime
+from urlparse import urlparse
 from xml.etree.ElementTree import fromstring
 from .autop import wpautop
+from .extract_images import get_all_linked_images
 
 def parse_post(post):
     out = {}
@@ -14,9 +17,7 @@ def parse_post(post):
             out['post_type'] = element.text
         if 'link' in element.tag:
             out['link'] = element.text
-    out['body'] = wpautop(post.findtext('{http://purl.org/rss/1.0/modules/content/}encoded'))
-    out['comments'] = get_comments(post)
-    out['categories'] = get_categories(post)
+    out['body'] = wpautop(post.findtext('.//{http://purl.org/rss/1.0/modules/content/}encoded'))
     return out
 
 def parse_comment(comment):
@@ -31,19 +32,13 @@ def parse_comment(comment):
         if 'comment_content' in element.tag:
             out['comment_content'] = element.text
         if 'comment_date' in element.tag:
-            out['comment_date'] = element.text
+            out['comment_date'] = datetime.datetime.strptime(element.text,'%Y-%m-%d %H:%M:%S')
         if 'comment_author_IP' in element.tag:
             out['comment_author_IP'] = element.text
     return out
 
 def parse_category(category):
     return category.text
-
-def get_posts(input_string):
-    data = fromstring(input_string)
-    posts = data.findall('.//item')
-    for post in posts:
-        yield parse_post(post)
 
 def get_comments(post):
     comments = post.findall('categories')
@@ -58,4 +53,26 @@ def get_categories(post):
     for c in categories:
         if c.get('domain') == 'category':
             yield parse_category(c)
+
+            
+class WPParser(object):
+    def __init__(self,input_string):
+        self.input_string = input_string
+        self.data = fromstring(self.input_string)
+        self.queued_images = set()
+    
+    def get_domain(self):
+        return urlparse(self.data.find('.//channel/link').text).hostname
+
+    def get_posts(self,download_images=True):
+        posts = self.data.findall('.//item')
+        for post in posts:
+            post = parse_post(post)
+            post['comments'] = get_comments(post)
+            post['categories'] = get_categories(post)
+            if download_images:
+                images = get_all_linked_images(post['body'],ignore_unless=self.get_domain())
+                if images:
+                    self.queued_images.update(set(images))
+            yield post
 
