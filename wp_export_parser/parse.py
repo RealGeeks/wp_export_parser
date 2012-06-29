@@ -39,6 +39,8 @@ def parse_comment(comment):
             out['comment_date'] = datetime.datetime.strptime(element.text,'%Y-%m-%d %H:%M:%S')
         if 'comment_author_IP' in element.tag:
             out['comment_author_IP'] = element.text
+        if 'comment_approved' in element.tag:
+            out['comment_approved'] = bool(element.text)
     return out
 
 def parse_category(category):

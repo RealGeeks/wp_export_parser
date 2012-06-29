@@ -55,7 +55,7 @@ class TestParseComment(unittest.TestCase):
 		</wp:comment>
         """)
         parsed_comment = parse_comment(comment)
-        expected = {'comment_date': datetime.datetime(2009,3,18,19,28,23), 'comment_author_url': 'http://realestateapproval.info/to-rent-or-buy-that-is-the-question/', 'comment_author_IP': '74.54.206.242', 'comment_content': u'[...] given thought to what is written here, you still want to buy a home, by all means do so.\xa0 Employ a Realtor that is contractually obligated and morally committed to work in your best interest, take the time [...]', 'comment_author': '74.54.206.242', 'comment_author_email': 'pinged'}
+        expected = {'comment_date': datetime.datetime(2009,3,18,19,28,23), 'comment_approved': True, 'comment_author_url': 'http://realestateapproval.info/to-rent-or-buy-that-is-the-question/', 'comment_author_IP': '74.54.206.242', 'comment_content': u'[...] given thought to what is written here, you still want to buy a home, by all means do so.\xa0 Employ a Realtor that is contractually obligated and morally committed to work in your best interest, take the time [...]', 'comment_author': '74.54.206.242', 'comment_author_email': 'pinged'}
         self.assertEquals(parsed_comment,expected)
 
 
