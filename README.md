@@ -31,3 +31,7 @@ with open('wp-export.xml') as export_file:
         title = p['title']
         type = p['post_type'] #type can be 'page' or 'post'
 ```
+
+#Notes
+ * I didn't want to use `iterparse` because it is a pain in the butt, so this thing has a tendency to suck up a lot of memory if you're trying to parse really big files.
+ * `wp_export_parser` sometimes will return unicode strings for the blog contents.
