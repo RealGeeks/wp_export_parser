@@ -71,12 +71,12 @@ class WPParser(object):
     def get_posts(self,extract_images=True):
         posts = self.data.findall('.//item')
         for post in posts:
-            post = parse_post(post)
-            post['comments'] = get_comments(post)
-            post['categories'] = get_categories(post)
+            out = parse_post(post)
+            out['comments'] = get_comments(post)
+            out['categories'] = get_categories(post)
             if extract_images:
-                images = get_all_linked_images(post['body'],ignore_unless=self.get_domain())
+                images = get_all_linked_images(out['body'],ignore_unless=self.get_domain())
                 if images:
                     self.queued_images.update(set(images))
-            yield post
+            yield out
 
