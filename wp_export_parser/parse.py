@@ -17,8 +17,8 @@ def parse_post(post):
             out['post_type'] = element.text
         elif 'pubDate' in element.tag:
             out['pubDate'] = datetime.datetime.strptime(element.text,'%a, %d %b %Y %H:%M:%S +0000')
-        elif 'pubDate' in element.tag:
-            out['pubDate'] = datetime.datetime.strptime(element.text,'%a, %d %b %Y %H:%M:%S +0000')
+        elif 'status' in element.tag:
+            out['status'] = element.text
         elif 'link' in element.tag:
             out['link'] = element.text
     out['body'] = wpautop(post.findtext('.//{http://purl.org/rss/1.0/modules/content/}encoded'))
