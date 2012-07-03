@@ -7,5 +7,5 @@ setup(name='wp_export_parser',
       description='Wordpress Export Parser',
       author='Kevin McCarthy',
       author_email='mc@kevinmccarthy.org',
-      packages=['wp_export_parser'],
+      packages=['wp_export_parser','wp_export_parser.shortcodes'],
 )
