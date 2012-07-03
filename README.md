@@ -4,9 +4,9 @@
 
 Parsing XML sucks.  This library provides a cleaner interface to get at the data in a [Wordpress](http://wordpress.org) export XML file.  
 
-I'm using the built-in `etree.ElementTree` parser to parse the actual [Wordpress XML file](http://en.blog.wordpress.com/2006/06/12/xml-import-export/), and [BeautifulSoup4](http://www.crummy.com/software/BeautifulSoup/) to extract images from the body of the posts.
+I'm using the built-in `etree.ElementTree` parser to parse the [Wordpress XML file](http://en.blog.wordpress.com/2006/06/12/xml-import-export/).
 
-If you have a Wordpress export that breaks the parser (I *know* they are out there) send it over and I'll see what I can do to make it work.
+If you have a Wordpress export that breaks the parser I feel your pain.  Try looking at the line that Expat is barfing on and manually fixing it.
 
 #Features
 
@@ -16,7 +16,6 @@ wp_export_parser can extract the following features from a Wordpress export file
  * Pages
  * Comments
  * Categories
- * Images linked in posts and pages
 
 
 ```python
@@ -25,7 +24,7 @@ from wp_export_parser import WPParser
 with open('wp-export.xml') as export_file:
     parser = WPParser(export_file.read())
     print parser.get_domain() # outputs www.example.com
-    for p in parser.get_posts():
+    for p in parser.get_post_and_pages():
         categories = p['categories']
         comments = p['comments']
         title = p['title']
@@ -33,5 +32,5 @@ with open('wp-export.xml') as export_file:
 ```
 
 #Notes
- * I didn't want to use `iterparse` because it is a pain in the butt, so this thing has a tendency to suck up a lot of memory if you're trying to parse really big files.
+ * `wp_eport_parser` will parse files iteratively so it *should* be able to handle really large exports.  `get_pages()` returns a generator.
  * `wp_export_parser` sometimes will return unicode strings for the blog contents.
