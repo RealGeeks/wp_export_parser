@@ -2,7 +2,7 @@
 
 from distutils.core import setup
 
-setup(name='VCR.py',
+setup(name='wp_export_parser',
       version='1.0',
       description='Wordpress Export Parser',
       author='Kevin McCarthy',
