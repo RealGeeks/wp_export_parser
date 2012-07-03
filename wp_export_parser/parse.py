@@ -1,8 +1,19 @@
+import re
 import datetime
 from urlparse import urlparse
 from xml.etree.ElementTree import iterparse
 from .autop import wpautop
-from .extract_images import get_all_linked_images
+
+def parse_pubdate(datestr):
+    """
+    Attempt to parse the weird date format that wordpress uses
+    for its publication dates.  Strip out the strange -0001 year
+    see every now and then and replace with 1970 because 1970 was
+    a good year.
+    """
+    datestr = re.sub(r' \+0000$','',datestr)
+    datestr = re.sub(r'-0001','1970',datestr)
+    return datetime.datetime.strptime(datestr,'%a, %d %b %Y %H:%M:%S')
 
 def parse_post(post):
     out = {}
@@ -16,7 +27,7 @@ def parse_post(post):
         elif 'post_type' in element.tag:
             out['post_type'] = element.text
         elif 'pubDate' in element.tag and element.text:
-            out['pubDate'] = datetime.datetime.strptime(element.text,'%a, %d %b %Y %H:%M:%S +0000')
+            out['pubDate'] = parse_pubdate(element.text)
         elif 'status' in element.tag:
             out['status'] = element.text
         elif 'link' in element.tag:

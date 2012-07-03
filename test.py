@@ -4,21 +4,20 @@ import unittest
 import datetime
 from StringIO import StringIO
 from wp_export_parser.autop import wpautop
-from wp_export_parser.parse import parse_post, parse_comment, parse_category, WPParser
+from wp_export_parser.parse import parse_post, parse_comment, parse_category, WPParser, parse_pubdate
 from wp_export_parser.extract_images import get_all_linked_images
 from xml.etree.ElementTree import fromstring
 
 def wp_export_fragment(text,annoying_version="1.2"):
     namespace_header = """<rss version="2.0"
-	xmlns:excerpt="http://wordpress.org/export/{v}/excerpt/"
-	xmlns:content="http://purl.org/rss/1.0/modules/content/"
-	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
-	xmlns:dc="http://purl.org/dc/elements/1.1/"
-	xmlns:wp="http://wordpress.org/export/{v}/"
+    xmlns:excerpt="http://wordpress.org/export/{v}/excerpt/"
+    xmlns:content="http://purl.org/rss/1.0/modules/content/"
+    xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:wp="http://wordpress.org/export/{v}/"
         >""".format(v=annoying_version)
     namespace_footer = "</rss>"
     return namespace_header + text + namespace_footer
-
 
 
 class TestAutop(unittest.TestCase):
@@ -40,20 +39,20 @@ class TestAutop(unittest.TestCase):
 class TestParseComment(unittest.TestCase):
     def test_parse_comment(self):
         comment = fromstring(wp_export_fragment("""
-		<wp:comment>
-			<wp:comment_id>695</wp:comment_id>
-			<wp:comment_author><![CDATA[To Rent or Buy, That is the Question | Real Estate Approval]]></wp:comment_author>
-			<wp:comment_author_email>pinged</wp:comment_author_email>
-			<wp:comment_author_url>http://realestateapproval.info/to-rent-or-buy-that-is-the-question/</wp:comment_author_url>
-			<wp:comment_author_IP>74.54.206.242</wp:comment_author_IP>
-			<wp:comment_date>2009-03-18 11:28:23</wp:comment_date>
-			<wp:comment_date_gmt>2009-03-18 19:28:23</wp:comment_date_gmt>
-			<wp:comment_content><![CDATA[[...] given thought to what is written here, you still want to buy a home, by all means do so.  Employ a Realtor that is contractually obligated and morally committed to work in your best interest, take the time [...]]]></wp:comment_content>
-			<wp:comment_approved>1</wp:comment_approved>
-			<wp:comment_type>pingback</wp:comment_type>
-			<wp:comment_parent>0</wp:comment_parent>
-			<wp:comment_user_id>0</wp:comment_user_id>
-		</wp:comment>
+        <wp:comment>
+            <wp:comment_id>695</wp:comment_id>
+            <wp:comment_author><![CDATA[To Rent or Buy, That is the Question | Real Estate Approval]]></wp:comment_author>
+            <wp:comment_author_email>pinged</wp:comment_author_email>
+            <wp:comment_author_url>http://realestateapproval.info/to-rent-or-buy-that-is-the-question/</wp:comment_author_url>
+            <wp:comment_author_IP>74.54.206.242</wp:comment_author_IP>
+            <wp:comment_date>2009-03-18 11:28:23</wp:comment_date>
+            <wp:comment_date_gmt>2009-03-18 19:28:23</wp:comment_date_gmt>
+            <wp:comment_content><![CDATA[[...] given thought to what is written here, you still want to buy a home, by all means do so.  Employ a Realtor that is contractually obligated and morally committed to work in your best interest, take the time [...]]]></wp:comment_content>
+            <wp:comment_approved>1</wp:comment_approved>
+            <wp:comment_type>pingback</wp:comment_type>
+            <wp:comment_parent>0</wp:comment_parent>
+            <wp:comment_user_id>0</wp:comment_user_id>
+        </wp:comment>
         """))
         parsed_comment = parse_comment(comment)
         expected = {'comment_date': datetime.datetime(2009,3,18,19,28,23), 'comment_approved': True, 'comment_author_url': 'http://realestateapproval.info/to-rent-or-buy-that-is-the-question/', 'comment_author_IP': '74.54.206.242', 'comment_content': u'[...] given thought to what is written here, you still want to buy a home, by all means do so.\xa0 Employ a Realtor that is contractually obligated and morally committed to work in your best interest, take the time [...]', 'comment_author': 'To Rent or Buy, That is the Question | Real Estate Approval', 'comment_author_email': 'pinged'}
@@ -66,26 +65,36 @@ class TestParseCategory(unittest.TestCase):
         parsed_category = parse_category(category)
         self.assertEquals(parsed_category,'Bank of America Idiotcies')
 
+class TestParsePubDate(unittest.TestCase):
+    def test_parse_date_with_weird_timezone_thin(self):
+        date = 'Sun, 27 May 2012 17:15:14 +0000'
+        self.assertEquals(parse_pubdate(date),datetime.datetime(2012,5,27,17,15,14))
+
+    def test_another_weird_date(self):
+        date = 'Wed, 30 Nov -0001 00:00:00 +0000'
+        self.assertEquals(parse_pubdate(date),datetime.datetime(1970,11,30,0,0,0))
+
+
 class TestParsePost(unittest.TestCase):
     """
-		<content:encoded><![CDATA[<img class="size-medium wp-image-4642 alignleft" style="margin: 10px;" title="Somewhere Home Owners it's Time to Sell" src="http://www.example.com/somewheredwellings/wp-content/uploads//2012/05/129-300x200.jpg" alt="" width="300" height="200" />The news is out, the real estate market has changed. Why?  There are a variety of reasons: # MLS -   # # # #
+        <content:encoded><![CDATA[<img class="size-medium wp-image-4642 alignleft" style="margin: 10px;" title="Somewhere Home Owners it's Time to Sell" src="http://www.example.com/somewheredwellings/wp-content/uploads//2012/05/129-300x200.jpg" alt="" width="300" height="200" />The news is out, the real estate market has changed. Why?  There are a variety of reasons: # MLS -   # # # #
 
 <o:p><font face="Arial"> </font></o:p><font face="Arial">Call 541-389-4511 or see his web site to search the MLS - <strong><a href="http://www.bendoregonrealestateexpert.com/"><font color="#800080">Bend Oregon Real Estate</font></a></strong>.Â:w 
 
 Each month we ar].]e seeing the "Days on Market" average drop. Currently it is less than 3 months.]]></content:encoded>
     """
     post_text = """
-	<item>
-		<title>Somewhere Real Estate Sellers, Your Time Has Come!</title>
-		<link>http://www.example.com/somewheredwellings/sellers-market/4641/</link>
-		<pubDate>Sun, 27 May 2012 17:15:14 +0000</pubDate>
-		<dc:creator>Kristal Kraft Somewhere Realtor</dc:creator>
-		<description></description>
-		<wp:post_id>4641</wp:post_id>
-		<wp:post_date>2012-05-27 10:15:14</wp:post_date>
-		<wp:post_date_gmt>2012-05-27 17:15:14</wp:post_date_gmt>
-		<wp:post_name>sellers-market</wp:post_name>
-		<wp:status>publish</wp:status>
+    <item>
+        <title>Somewhere Real Estate Sellers, Your Time Has Come!</title>
+        <link>http://www.example.com/somewheredwellings/sellers-market/4641/</link>
+        <pubDate>Sun, 27 May 2012 17:15:14 +0000</pubDate>
+        <dc:creator>Kristal Kraft Somewhere Realtor</dc:creator>
+        <description></description>
+        <wp:post_id>4641</wp:post_id>
+        <wp:post_date>2012-05-27 10:15:14</wp:post_date>
+        <wp:post_date_gmt>2012-05-27 17:15:14</wp:post_date_gmt>
+        <wp:post_name>sellers-market</wp:post_name>
+        <wp:status>publish</wp:status>
 <content:encoded><![CDATA[
 <p align="center"> <a href="http://www.bendoregonrealestateexpert.com/bend-real-estate-blog/wp-content/uploads/2009/11/bend-oregon-real-estate-market.jpg" title="bend-oregon-real-estate-market.jpg"><img src="http://www.bendoregonrealestateexpert.com/bend-real-estate-blog/wp-content/uploads/2009/11/bend-oregon-real-estate-market.jpg" alt="bend-oregon-real-estate-market.jpg" /></a></p>
 There are not many times in a person's life time that an opportunity comes along like the present opportunity to buy real estate in Bend Oregon.  Interest rates are hovering around 5% and home prices are almost 50% less than they were two years ago.
@@ -103,7 +112,7 @@ And to top all this most economist agree that we will be seeing a substantial am
 
 <o:p><font face="Arial"> </font></o:p><font face="Arial">Call 541-389-4511 or see his web site to search the MLS - <strong><a href="http://www.bendoregonrealestateexpert.com/"><font color="#800080">Bend Oregon Real Estate</font></a></strong>.  Jim is licensed by the State of Oregon as the Principal Broker for Bend Oregon Real Estate Expert.<span>  </span><strong><a href="mailto:jimj@bendcable.com"><font color="#1900ff">E-MAIL</font></a><o:p></o:p></strong></font>]]></content:encoded>
 <excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	</item>
+    </item>
         """
 
     def test_parse_post(self):
@@ -127,7 +136,7 @@ And to top all this most economist agree that we will be seeing a substantial am
 class TestExtractDomain(unittest.TestCase):
     channel_text = """
     <channel>
-	    <link>http://www.example.com/somewhere-real-estate-blog</link>
+        <link>http://www.example.com/somewhere-real-estate-blog</link>
     </channel>
     """
 
