@@ -5,7 +5,7 @@ import datetime
 from StringIO import StringIO
 from wp_export_parser.autop import wpautop
 from wp_export_parser.parse import parse_post, parse_comment, parse_category, WPParser, parse_pubdate
-from wp_export_parser.extract_images import get_all_linked_images
+from wp_export_parser import parse_shortcodes
 from xml.etree.ElementTree import fromstring
 
 def wp_export_fragment(text,annoying_version="1.2"):
@@ -159,6 +159,23 @@ class TestGetPosts(unittest.TestCase):
     def test_get_items(self):
         parser = WPParser(StringIO(wp_export_fragment(self.channel_text)))
         self.assertEquals(len([x for x in parser.get_items()]),2)
+
+class TestParseShortcodes(unittest.TestCase):
+
+    def test_simple_shortcode(self):
+        text = "asdihasdf fioasdi [youtube oHg5SJYRHA0]"
+        out = parse_shortcodes.parse(text)
+        assert('<iframe width="800" height="600" src="http://www.youtube.com/embed/oHg5SJYRHA0?fs=1&feature=oembed" frameborder="0" allowfullscreen></iframe>' in out)
+
+    def test_invalid_youtube_shortcode(self):
+        text = "blah blah [youtube monkeypoo]"
+        out = parse_shortcodes.parse(text)
+        self.assertEquals(text,'blah blah [youtube monkeypoo]')
+
+    def test_invalid_shortcode(self):
+        text = "blah blah [somethingelse monkeypoo]"
+        out = parse_shortcodes.parse(text)
+        self.assertEquals(text,'blah blah [somethingelse monkeypoo]')
     
 
 if __name__ == '__main__':

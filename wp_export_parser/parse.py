@@ -3,6 +3,7 @@ import datetime
 from urlparse import urlparse
 from xml.etree.ElementTree import iterparse
 from .autop import wpautop
+from . import parse_shortcodes
 
 def parse_pubdate(datestr):
     """
@@ -33,7 +34,7 @@ def parse_post(post):
         elif 'link' in element.tag:
             out['link'] = element.text
         elif 'encoded' in element.tag and 'content' in element.tag:
-            out['body'] = wpautop(element.text)
+            out['body'] = parse_shortcodes.parse(wpautop(element.text))
     return out
 
 def parse_comment(comment):
