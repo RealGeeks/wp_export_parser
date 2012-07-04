@@ -18,6 +18,7 @@ def parse_pubdate(datestr):
 
 def parse_post(post):
     out = {}
+    out['postmeta'] = {}
     for element in post.getiterator():
         if 'title' in element.tag:
             out['title'] = element.text
@@ -35,6 +36,13 @@ def parse_post(post):
             out['link'] = element.text
         elif 'encoded' in element.tag and 'content' in element.tag:
             out['body'] = parse_shortcodes.parse(wpautop(element.text))
+        elif 'postmeta' in element.tag:
+            for meta_element in element.getchildren():
+                if 'meta_key' in meta_element.tag:
+                    key = meta_element.text
+                elif 'meta_value' in meta_element.tag:
+                    value = meta_element.text
+            out['postmeta'][key] = value
     return out
 
 def parse_comment(comment):

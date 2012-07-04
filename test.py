@@ -114,7 +114,6 @@ And to top all this most economist agree that we will be seeing a substantial am
 <excerpt:encoded><![CDATA[]]></excerpt:encoded>
     </item>
         """
-
     def test_parse_post(self):
         post = fromstring(wp_export_fragment(self.post_text))
         parsed_post = parse_post(post)
@@ -132,6 +131,20 @@ And to top all this most economist agree that we will be seeing a substantial am
         post = fromstring(wp_export_fragment(self.post_text))
         parsed_post = parse_post(post)
         self.assertEquals(parsed_post['pubDate'],datetime.datetime(2012,5,27,17,15,14))
+
+
+    def test_parse_postmeta(self):
+        post_text = """<item>
+                <wp:post_type>post</wp:post_type>
+		<wp:postmeta>
+			<wp:meta_key>_wp_attached_file</wp:meta_key>
+			<wp:meta_value><![CDATA[2009/09/Ft-Desoto-Sunrise.jpg]]></wp:meta_value>
+		</wp:postmeta>
+                </item>
+        """
+        post = fromstring(wp_export_fragment(post_text))
+        parsed_post = parse_post(post)
+        self.assertEquals(parsed_post['postmeta']['_wp_attached_file'], '2009/09/Ft-Desoto-Sunrise.jpg')
     
 class TestExtractDomain(unittest.TestCase):
     channel_text = """
@@ -142,7 +155,7 @@ class TestExtractDomain(unittest.TestCase):
 
     def test_extract_domain(self):
         parser = WPParser(StringIO(wp_export_fragment(self.channel_text)))
-        self.assertEquals(parser.get_domain(),'www.example.com')
+        self.assertEquals(parser.get_domain(), 'www.example.com')
         
 class TestGetPosts(unittest.TestCase):
     channel_text = """
