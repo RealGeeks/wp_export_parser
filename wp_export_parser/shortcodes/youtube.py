@@ -17,7 +17,8 @@ def get_embed_code(video_id, width=800, height=600):
     except (urllib2.HTTPError, urllib2.URLError, httplib.HTTPException):
         return ''
 
-def parse(match):
-    return get_embed_code(match.group(3).strip())
+def parse(args):
+    args = [a for a in args.split(' ') if a]
+    return get_embed_code(*args)
     
 

@@ -6,7 +6,7 @@ TAGS_WE_CAN_PARSE = {
 }
 
 def replace_tags(match):
-    return youtube.parse(match)
+    return youtube.parse(match.group(3))
 
 def parse(post_body):
     """

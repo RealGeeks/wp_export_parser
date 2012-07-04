@@ -175,7 +175,12 @@ class TestParseShortcodes(unittest.TestCase):
     def test_invalid_shortcode(self):
         text = "blah blah [somethingelse monkeypoo]"
         out = parse_shortcodes.parse(text)
-        self.assertEquals(text,'blah blah [somethingelse monkeypoo]')
+        self.assertEquals(out,'blah blah [somethingelse monkeypoo]')
+
+    def test_complicated_shortcode(self):
+        text = '<p style="text-align: center;">[youtube VNmliVqLKeg 560 340]</p>'
+        out = parse_shortcodes.parse(text)
+        self.assertEquals(out,'<p style="text-align: center;"><iframe width="560" height="315" src="http://www.youtube.com/embed/VNmliVqLKeg?fs=1&feature=oembed" frameborder="0" allowfullscreen></iframe></p>')
     
 
 if __name__ == '__main__':
