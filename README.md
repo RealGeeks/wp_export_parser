@@ -10,13 +10,17 @@ If you have a Wordpress export that breaks the parser I feel your pain.  Try loo
 
 #Features
 
-wp_export_parser can extract the following features from a Wordpress export file:
+`wp_export_parser` can extract the following features from a Wordpress export file:
 
  * Posts
  * Pages
- * Comments
- * Categories
+ * Comments (exposed as a generator returning dicts)
+ * Categories (exposed as list of strings)
+ * Postmeta (exposed as dict)
 
+#More Features
+ * `wp_export_parser` has support for the `[youtube]` shortcode.  It retrieves the correct embed code (using oEmbed) and replaces the shortcode transparently.
+ * `wp_export_parser` attempts to emulate the same behavior Wordpress uses to add `<p>` and `<br>` tags.  I did this by attempting a 1-to-1 translation of the giant regular expression Wordpress uses to render posts.
 
 ```python
 from wp_export_parser import WPParser
@@ -34,3 +38,4 @@ with open('wp-export.xml') as export_file:
 #Notes
  * `wp_eport_parser` will parse files iteratively so it *should* be able to handle really large exports.  `get_pages()` returns a generator.
  * `wp_export_parser` sometimes will return unicode strings for the blog contents.
+ * Tested with CPython 2.6 and 2.7, as well as Pypy.
