@@ -185,6 +185,16 @@ class TestParseShortcodes(unittest.TestCase):
         out = parse_shortcodes.parse(text)
         self.assertEquals(text,'blah blah [youtube monkeypoo]')
 
+    def test_empty_youtube_shortcode(self):
+        text = "blah blah [youtube ]"
+        out = parse_shortcodes.parse(text)
+        self.assertEquals(text,'blah blah [youtube ]')
+
+    def test_really_empty_youtube_shortcode(self):
+        text = "blah blah [youtube]"
+        out = parse_shortcodes.parse(text)
+        self.assertEquals(text,'blah blah [youtube]')
+
     def test_invalid_shortcode(self):
         text = "blah blah [somethingelse monkeypoo]"
         out = parse_shortcodes.parse(text)

@@ -19,6 +19,8 @@ def get_embed_code(video_id, width=800, height=600):
 
 def parse(args):
     args = [a for a in args.split(' ') if a]
+    if not args:
+        return ''
     return get_embed_code(*args)
     
 
