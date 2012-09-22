@@ -56,7 +56,8 @@ def wpautop(pee, br = 1):
     pee = re.sub('(</?' + allblocks + '[^>]*>)\s*<br />', r"\1", pee)
     pee = re.sub('<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)', r'\1', pee)
     if pee.find('<pre') != -1:
-        pee = re.sub('(<pre[^>]*>)(.*?)</pre>', clean_pre, pee, flags=re.DOTALL)
+        compiled_pre_re = re.compile('(<pre[^>]*>)(.*?)</pre>', flags=re.DOTALL) #Note: Had to compile here since 2.6 doesn't have the DOTALL flag
+        pee = re.sub(compiled_pre_re, clean_pre, pee)
     pee = re.sub( "\n</p>$", '</p>', pee )
 
     return pee
