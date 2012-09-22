@@ -35,6 +35,11 @@ class TestAutop(unittest.TestCase):
         expected = "<p><object>test</object></p>\n"
         self.assertEquals(out,expected)
 
+    def test_pre_tags_dont_mess_with_linebreaks(self):
+        out = wpautop("<pre>\na\nb\nc</pre>\n")
+        expected = "<pre>\na\nb\nc</pre>\n"
+        self.assertEquals(out,expected)
+
 
 class TestParseComment(unittest.TestCase):
     def test_parse_comment(self):

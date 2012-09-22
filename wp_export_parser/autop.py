@@ -7,6 +7,17 @@ I did not invent the variable names pee and tinkle.  Those are copied from the w
 
 """
 
+def clean_pre(matches):
+    text = matches.group(0)
+    text = re.sub('<br />', '', text)
+    text = re.sub('<br/>', '', text)
+    text = re.sub('<br>', '', text)
+    text = re.sub('<p>', '\n', text)
+    text = re.sub('</p>', '', text)
+   
+    return text
+
+
 def wpautop(pee, br = 1):
     if not pee or pee.strip() == '':
             return ''
@@ -45,7 +56,7 @@ def wpautop(pee, br = 1):
     pee = re.sub('(</?' + allblocks + '[^>]*>)\s*<br />', r"\1", pee)
     pee = re.sub('<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)', r'\1', pee)
     if pee.find('<pre') != -1:
-        pee = re.sub_callback('(<pre[^>]*>)(.*?)</pre>', 'clean_pre', pee )
+        pee = re.sub('(<pre[^>]*>)(.*?)</pre>', clean_pre, pee, flags=re.DOTALL)
     pee = re.sub( "\n</p>$", '</p>', pee )
 
     return pee
