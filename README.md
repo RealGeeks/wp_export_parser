@@ -42,7 +42,11 @@ with open('wp-export.xml') as export_file:
         type = p['post_type'] #type can be 'page' or 'post'
 ```
 
-#Notes
+## Notes
  * `wp_eport_parser` will parse files iteratively so it *should* be able to handle really large exports.  `get_pages()` returns a generator.
  * `wp_export_parser` sometimes will return unicode strings for the blog contents.
  * Tested with CPython 2.6 and 2.7, as well as Pypy.
+
+## License
+
+Copyright (c) 2012 Kevin McCarthy. Released under the terms of the MIT license.
