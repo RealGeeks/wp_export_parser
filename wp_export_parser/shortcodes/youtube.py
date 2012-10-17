@@ -19,8 +19,8 @@ def get_embed_code(video_id, width=800, height=600):
         return ''
 
 
-def parse(args):
-    args = [a for a in args.split(' ') if a]
-    if not args:
+def get_data(tag_atts, tag_contents):
+    if not tag_atts:
         return ''
-    return get_embed_code(*args)
+    tag_atts = [a[7] for a in tag_atts] #don't ask me why; this is just the funky format we are getting back from that parse_att regexp
+    return get_embed_code(*tag_atts)

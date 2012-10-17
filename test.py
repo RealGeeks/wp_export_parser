@@ -178,6 +178,16 @@ class TestGetPosts(unittest.TestCase):
         parser = WPParser(StringIO(wp_export_fragment(self.channel_text)))
         self.assertEquals(len([x for x in parser.get_items()]),2)
 
+class TestStolenShortcodeRegexps(unittest.TestCase):
+
+    def test_parse_shortcode_attrs(self):
+        """
+        I'm testing the regexp I stole from wordpress even though I have no idea how it works.  This is some funky output, no?
+        """
+        atts = 'id="attachment_68" align="alignnone" width="900" caption="Caption goes here!"'
+        out = parse_shortcodes.parse_shortcode_atts(atts)
+        self.assertEquals(out, [('id', 'attachment_68', '', '', '', '', '', ''), ('align', 'alignnone', '', '', '', '', '', ''), ('width', '900', '', '', '', '', '', ''), ('caption', 'Caption goes here!', '', '', '', '', '', '')])
+
 class TestParseShortcodes(unittest.TestCase):
 
     def test_simple_shortcode(self):
@@ -200,6 +210,11 @@ class TestParseShortcodes(unittest.TestCase):
         out = parse_shortcodes.parse(text)
         self.assertEquals(text,'blah blah [youtube]')
 
+    def test_caption_shortcode(self):
+        text = 'blah blah [caption id="attachment_68" align="alignnone" width="900" caption="Caption goes here!"]<img />[/caption]'
+        out = parse_shortcodes.parse(text)
+        self.assertEquals(out,'blah blah <div id="attachment_68" class=\'wp-caption\' align="alignnone" style="width: \'910px\'"><p class=\'wp-caption-text\'><img /></p></div>')
+    
     def test_invalid_shortcode(self):
         text = "blah blah [somethingelse monkeypoo]"
         out = parse_shortcodes.parse(text)
@@ -209,7 +224,6 @@ class TestParseShortcodes(unittest.TestCase):
         text = '<p style="text-align: center;">[youtube VNmliVqLKeg 560 340]</p>'
         out = parse_shortcodes.parse(text)
         self.assertEquals(out,'<p style="text-align: center;"><iframe width="560" height="315" src="http://www.youtube.com/embed/VNmliVqLKeg?fs=1&feature=oembed" frameborder="0" allowfullscreen></iframe></p>')
-    
 
 if __name__ == '__main__':
     unittest.main()
