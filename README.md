@@ -1,4 +1,4 @@
-#wp_export_parser
+# wp_export_parser
 
 [![Build Status](https://secure.travis-ci.org/RealGeeks/wp_export_parser.png?branch=master)](http://travis-ci.org/RealGeeks/wp_export_parser)
 
@@ -8,7 +8,7 @@ I'm using the built-in `etree.ElementTree` parser to parse the [Wordpress XML fi
 
 If you have a Wordpress export that breaks the parser I feel your pain.  Try looking at the line that Expat is barfing on and manually fixing it.
 
-#Features
+## Features
 
 `wp_export_parser` can extract the following features from a Wordpress export file:
 
@@ -18,8 +18,15 @@ If you have a Wordpress export that breaks the parser I feel your pain.  Try loo
  * Categories (exposed as list of strings)
  * Postmeta (exposed as dict)
 
-#More Features
- * `wp_export_parser` has support for the `[youtube]` shortcode.  It retrieves the correct embed code (using oEmbed) and replaces the shortcode transparently.
+## Shortcodes
+Wordpress export files often include *shortcodes*, which the Wordpress rendering engine replaces with HTML.  Since you probably aren't going to want to reimplement Wordpress's shortcodes in your own blogging engine, I have ripped out the shortcode parsing regular expressions and provided implementations of the most commonly-used shortcodes inside `wp_export_parser`.
+
+ * `[youtube]`: `wp_export_parser` retrieves the correct embed code (using oEmbed) and replaces the shortcode transparently.
+ * `[caption]`: `wp_export_parser` attempts to generate the same HTML Wordpress will generate
+
+Feel free to fork and contribute more shortcode support with a pull request
+
+## Wordpress oddities
  * `wp_export_parser` attempts to emulate the same behavior Wordpress uses to add `<p>` and `<br>` tags.  I did this by attempting a 1-to-1 translation of the giant regular expression Wordpress uses to render posts.
 
 ```python
