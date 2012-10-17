@@ -213,7 +213,7 @@ class TestParseShortcodes(unittest.TestCase):
     def test_caption_shortcode(self):
         text = 'blah blah [caption id="attachment_68" align="alignnone" width="900" caption="Caption goes here!"]<img />[/caption]'
         out = parse_shortcodes.parse(text)
-        self.assertEquals(out,'blah blah <div id="attachment_68" class=\'wp-caption\' align="alignnone" style="width: \'910px\'"><p class=\'wp-caption-text\'><img /></p></div>')
+        self.assertEquals(out,'blah blah <div id="attachment_68" class=\'wp-caption\' align="alignnone" style="width: \'910px\'"><img /><p class=\'wp-caption-text\'>Caption goes here!</p></div>')
     
     def test_invalid_shortcode(self):
         text = "blah blah [somethingelse monkeypoo]"
