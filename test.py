@@ -193,7 +193,7 @@ class TestParseShortcodes(unittest.TestCase):
     def test_simple_shortcode(self):
         text = "asdihasdf fioasdi [youtube oHg5SJYRHA0]"
         out = parse_shortcodes.parse(text)
-        assert('<iframe width="800" height="600" src="http://www.youtube.com/embed/oHg5SJYRHA0?fs=1&feature=oembed" frameborder="0" allowfullscreen></iframe>' in out)
+        assert('<iframe width="800" height="600" src="http://www.youtube.com/embed/oHg5SJYRHA0?feature=oembed" frameborder="0" allowfullscreen></iframe>' in out)
 
     def test_invalid_youtube_shortcode(self):
         text = "blah blah [youtube monkeypoo]"
@@ -214,6 +214,11 @@ class TestParseShortcodes(unittest.TestCase):
         text = 'blah blah [caption id="attachment_68" align="alignnone" width="900" caption="Caption goes here!"]<img />[/caption]'
         out = parse_shortcodes.parse(text)
         self.assertEquals(out,'blah blah <div id="attachment_68" class=\'wp-caption\' align="alignnone" style="width: \'910px\'"><img /><p class=\'wp-caption-text\'>Caption goes here!</p></div>')
+
+    def test_caption_shortcode_with_unicode(self):
+        text = 'blah \u2603 blah [caption id="attachment_68" align="alignnone" width="900" caption="Caption goes here! \u2603"]<img />[/caption]'
+        out = parse_shortcodes.parse(text)
+        self.assertEquals(out,'blah \u2603 blah <div id="attachment_68" class=\'wp-caption\' align="alignnone" style="width: \'910px\'"><img /><p class=\'wp-caption-text\'>Caption goes here! \u2603</p></div>')
     
     def test_invalid_shortcode(self):
         text = "blah blah [somethingelse monkeypoo]"
@@ -223,7 +228,7 @@ class TestParseShortcodes(unittest.TestCase):
     def test_complicated_shortcode(self):
         text = '<p style="text-align: center;">[youtube VNmliVqLKeg 560 340]</p>'
         out = parse_shortcodes.parse(text)
-        self.assertEquals(out,'<p style="text-align: center;"><iframe width="560" height="315" src="http://www.youtube.com/embed/VNmliVqLKeg?fs=1&feature=oembed" frameborder="0" allowfullscreen></iframe></p>')
+        self.assertEquals(out,'<p style="text-align: center;"><iframe width="560" height="315" src="http://www.youtube.com/embed/VNmliVqLKeg?feature=oembed" frameborder="0" allowfullscreen></iframe></p>')
 
 if __name__ == '__main__':
     unittest.main()

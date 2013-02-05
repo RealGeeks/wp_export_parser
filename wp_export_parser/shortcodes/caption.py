@@ -13,11 +13,11 @@ def get_data(tag_atts, tag_contents):
     """
     if not tag_atts:
         return ''
-    tag_atts = dict([(a[0],a[1]) for a in tag_atts])
+    tag_atts = dict([(a[0].decode('utf-8'),a[1].decode('utf-8')) for a in tag_atts])
     return "<div id=\"{id}\" class='wp-caption' align=\"{align}\" style=\"width: '{width}px'\">{content}<p class='wp-caption-text'>{caption}</p></div>". format(
         id = cgi.escape(tag_atts.get('id',''), True),
         align = cgi.escape(tag_atts.get('align','alignnone'), True), 
         width = int(tag_atts.get('width',0)) + 10,
-        content = tag_contents,
-        caption = tag_atts.get('caption',''),
+        content = tag_contents.encode('utf-8'),
+        caption = tag_atts.get('caption','').encode('utf-8'),
     )
