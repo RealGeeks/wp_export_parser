@@ -51,4 +51,4 @@ Feel free to fork and contribute more shortcode support with a pull request
 
 ## License
 
-Copyright (c) 2012 Kevin McCarthy. Released under the terms of the MIT license.
+Copyright (c) 2012-2013 Kevin McCarthy. Released under the terms of the MIT license.
