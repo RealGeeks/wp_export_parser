@@ -14,13 +14,17 @@ If you have a Wordpress export that breaks the parser I feel your pain.  Try loo
 from wp_export_parser import WPParser
 
 with open('wp-export.xml') as export_file:
-    parser = WPParser(export_file.read())
+    parser = WPParser(export_file)
     print parser.get_domain() # outputs www.example.com
-    for p in parser.get_post_and_pages():
+    for p in parser.get_items():
         categories = p['categories']
         comments = p['comments']
-        title = p['title']
-        type = p['post_type'] #type can be 'page' or 'post'
+        post_title = p['title']
+        post_type = p['post_type']
+        post_body = p['body']
+        print "post type: {}\nPost title: {}\nPost : {}\n".format(post_type,
+                                                                  post_title,
+                                                                  post_body)
 ```
 
 ## Features
