@@ -1,8 +1,12 @@
 # coding=utf-8
+from ast import Import
 import os
 import unittest
 import datetime
-from StringIO import StringIO
+try:   
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 from wp_export_parser.autop import wpautop
 from wp_export_parser.parse import parse_post, parse_comment, parse_category, WPParser, parse_pubdate
 from wp_export_parser import parse_shortcodes
@@ -191,9 +195,9 @@ class TestStolenShortcodeRegexps(unittest.TestCase):
 class TestParseShortcodes(unittest.TestCase):
 
     def test_simple_shortcode(self):
-        text = "asdihasdf fioasdi [youtube oHg5SJYRHA0]"
+        text = "asdihasdf fioasdi [youtube HQKy1KJpSVc]"
         out = parse_shortcodes.parse(text)
-        assert('<iframe width="800" height="600" src="https://www.youtube.com/embed/oHg5SJYRHA0?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' in out)
+        assert('<iframe width="800" height="450" src="https://www.youtube.com/embed/HQKy1KJpSVc?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' in out)
 
     def test_invalid_youtube_shortcode(self):
         text = "blah blah [youtube monkeypoo]"
@@ -226,9 +230,9 @@ class TestParseShortcodes(unittest.TestCase):
         self.assertEquals(out,'blah blah [somethingelse monkeypoo]')
 
     def test_complicated_shortcode(self):
-        text = '<p style="text-align: center;">[youtube VNmliVqLKeg 560 340]</p>'
+        text = '<p style="text-align: center;">[youtube HQKy1KJpSVc 560 340]</p>'
         out = parse_shortcodes.parse(text)
-        self.assertEquals(out,'<p style="text-align: center;"><iframe width="560" height="315" src="https://www.youtube.com/embed/VNmliVqLKeg?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>')
+        self.assertEquals(out,'<p style="text-align: center;"><iframe width="560" height="315" src="https://www.youtube.com/embed/HQKy1KJpSVc?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>')
 
 if __name__ == '__main__':
     unittest.main()

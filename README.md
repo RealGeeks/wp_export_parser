@@ -61,6 +61,9 @@ docker build -t wp_export . && docker run -ti -v `pwd`:/opt/wp_export_parser wp_
 tox
 ```
 
+## Changelog
+* Added Dockerfile for Test environment
+* Conditionally importing to support python 2.7 and 3.5
 ## License
 
 Copyright (c) 2012-2022 Kevin McCarthy. Released under the terms of the MIT license.

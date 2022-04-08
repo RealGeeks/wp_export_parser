@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='wp_export_parser',
-      version='1.0',
+      version='1.0.1',
       description='Wordpress Export Parser',
       author='Kevin McCarthy',
       author_email='mc@kevinmccarthy.org',
