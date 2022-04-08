@@ -193,7 +193,7 @@ class TestParseShortcodes(unittest.TestCase):
     def test_simple_shortcode(self):
         text = "asdihasdf fioasdi [youtube oHg5SJYRHA0]"
         out = parse_shortcodes.parse(text)
-        assert('<iframe width="800" height="600" src="http://www.youtube.com/embed/oHg5SJYRHA0?feature=oembed" frameborder="0" allowfullscreen></iframe>' in out)
+        assert('<iframe width="800" height="600" src="https://www.youtube.com/embed/oHg5SJYRHA0?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' in out)
 
     def test_invalid_youtube_shortcode(self):
         text = "blah blah [youtube monkeypoo]"
@@ -228,7 +228,7 @@ class TestParseShortcodes(unittest.TestCase):
     def test_complicated_shortcode(self):
         text = '<p style="text-align: center;">[youtube VNmliVqLKeg 560 340]</p>'
         out = parse_shortcodes.parse(text)
-        self.assertEquals(out,'<p style="text-align: center;"><iframe width="560" height="315" src="http://www.youtube.com/embed/VNmliVqLKeg?feature=oembed" frameborder="0" allowfullscreen></iframe></p>')
+        self.assertEquals(out,'<p style="text-align: center;"><iframe width="560" height="315" src="https://www.youtube.com/embed/VNmliVqLKeg?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>')
 
 if __name__ == '__main__':
     unittest.main()
