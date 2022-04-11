@@ -1,8 +1,7 @@
-import cgi
-import re
-import json
-import httplib
-import urllib2
+try:
+    from html import escape
+except ImportError:
+    from cgi import escape
 
 def get_data(tag_atts, tag_contents):
     """
@@ -15,8 +14,8 @@ def get_data(tag_atts, tag_contents):
         return ''
     tag_atts = dict([(a[0], a[1]) for a in tag_atts])
     return u"<div id=\"{id}\" class='wp-caption' align=\"{align}\" style=\"width: '{width}px'\">{content}<p class='wp-caption-text'>{caption}</p></div>". format(
-        id = cgi.escape(tag_atts.get('id',''), True),
-        align = cgi.escape(tag_atts.get('align','alignnone'), True), 
+        id = escape(tag_atts.get('id',''), True),
+        align = escape(tag_atts.get('align','alignnone'), True), 
         width = int(tag_atts.get('width',0)) + 10,
         content = tag_contents,
         caption = tag_atts.get('caption',''),

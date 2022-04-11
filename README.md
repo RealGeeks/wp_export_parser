@@ -51,8 +51,19 @@ Feel free to fork and contribute more shortcode support with a pull request
 ## Notes
  * `wp_eport_parser` will parse files iteratively so it *should* be able to handle really large exports.  `get_pages()` returns a generator.
  * `wp_export_parser` sometimes will return unicode strings for the blog contents.
- * Tested with CPython 2.6 and 2.7, as well as Pypy.
+ * Tested with CPython 2.7 and 3.5
 
+## To run the tests in docker
+```
+# Spin up docker container
+docker build -t wp_export . && docker run -ti -v `pwd`:/opt/wp_export_parser wp_export bash
+# From within the running container, run the tests
+tox
+```
+
+## Changelog
+* Added Dockerfile for Test environment
+* Conditionally importing to support python 2.7 and 3.5
 ## License
 
-Copyright (c) 2012-2013 Kevin McCarthy. Released under the terms of the MIT license.
+Copyright (c) 2012-2022 Kevin McCarthy. Released under the terms of the MIT license.
