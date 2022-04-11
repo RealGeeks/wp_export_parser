@@ -1,9 +1,7 @@
 # coding=utf-8
-from ast import Import
-import os
 import unittest
 import datetime
-try:   
+try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
